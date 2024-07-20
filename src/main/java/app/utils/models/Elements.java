@@ -1,6 +1,6 @@
 package app.utils.models;
 
-public enum PokemonType {
+public enum Elements {
         NEUTRAL,
         FIRE,
         WATER,
