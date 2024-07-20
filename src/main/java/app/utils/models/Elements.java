@@ -9,6 +9,15 @@ public enum Elements {
         ICE,
         FIGHTING,
         POISON,
-        GROUND
+        GROUND;
+
+    public static boolean isValidElement(String type) {
+        for (Elements element : Elements.values()) {
+            if (element.toString().equals(type.toUpperCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
