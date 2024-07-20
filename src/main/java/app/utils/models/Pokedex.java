@@ -4,17 +4,22 @@ import app.utils.exceptions.InvalidPokemonException;
 import app.utils.exceptions.PokedexEmptyException;
 import app.utils.exceptions.PokemonAlreadyExistsException;
 import app.utils.exceptions.PokemonNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class Pokedex {
-    private static final Set<Pokemon> pokedex = new HashSet<>();  // HashSet to store the Pokemon. Defined as Set for flexibility and maintainability
-    private static final Logger log = LoggerFactory.getLogger(Pokedex.class);
+    private Set<Pokemon> pokedex;  // HashSet to store the Pokemon. Defined as Set for flexibility and maintainability
 
-    public static void addPokemon(Pokemon pokemon) throws PokemonAlreadyExistsException, InvalidPokemonException {
+    public Pokedex() {
+        this.pokedex = new HashSet<>();
+    }
+
+    public Pokedex(HashSet<Pokemon> pokedex) {
+        this.pokedex = pokedex;
+    }
+
+    public void addPokemon(Pokemon pokemon) throws PokemonAlreadyExistsException, InvalidPokemonException {
         if (pokedex.contains(pokemon)) {
             throw new PokemonAlreadyExistsException("Pokemon already exists in the pokedex");
         }
@@ -24,7 +29,7 @@ public class Pokedex {
         pokedex.add(pokemon);
     }
 
-    public static void removePokemon(Pokemon pokemon) throws PokedexEmptyException, PokemonNotFoundException {
+    public void removePokemon(Pokemon pokemon) throws PokedexEmptyException, PokemonNotFoundException {
         if (pokedex.isEmpty()) {
             throw new PokedexEmptyException("Pokedex is empty, cannot remove any Pokemon.");
         }
@@ -34,14 +39,12 @@ public class Pokedex {
         pokedex.remove(pokemon);
     }
 
-    public static Pokemon searchPokemonByName(String name) throws PokemonNotFoundException, PokedexEmptyException {
+    public Pokemon searchPokemonByName(String name) throws PokemonNotFoundException, PokedexEmptyException {
         // If the pokedex does not contain this pokemon, throw InvalidQueryParameterException
         if (pokedex.isEmpty()) {
             throw new PokedexEmptyException("Pokedex is empty, cannot search for any Pokemon.");
         }
         for (Pokemon pokemon : pokedex) {
-            log.info("Looking for pokemon: " + name);
-            log.info("Current pokemon: " + pokemon.getPokemonName());
             if (pokemon.getPokemonName().equals(name)) {
                 return pokemon;
             }
@@ -49,15 +52,15 @@ public class Pokedex {
         throw new PokemonNotFoundException("Pokemon not found in the pokedex.");
     }
 
-    public static Set<Pokemon> getPokedex() {
+    public Set<Pokemon> getPokedex() {
         return pokedex;
     }
 
-    public static void clearPokedex() {
+    public void clearPokedex() {
         pokedex.clear();
     }
 
-    public static boolean contains(Pokemon pokemon) {
+    public boolean contains(Pokemon pokemon) {
         /*
             I made this method if I want to access the pokedex from another class.
             In this class, I just use pokedex.contains() instead.
