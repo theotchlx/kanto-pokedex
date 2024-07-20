@@ -4,13 +4,13 @@ import java.util.Objects;
 
 public class Power {
     private String powerName;
-    private PokemonType damageType;
+    private Elements damageType;
     private int damage;
 
     public Power() {
     }
 
-    public Power(String powerName, PokemonType damageType, int damage) {
+    public Power(String powerName, Elements damageType, int damage) {
         this.powerName = powerName;
         this.damageType = damageType;
         this.damage = damage;
@@ -38,11 +38,11 @@ public class Power {
         this.powerName = powerName;
     }
 
-    public PokemonType getDamageType() {
+    public Elements getDamageType() {
         return damageType;
     }
 
-    public void setDamageType(PokemonType damageType) {
+    public void setDamageType(Elements damageType) {
         this.damageType = damageType;
     }
 
