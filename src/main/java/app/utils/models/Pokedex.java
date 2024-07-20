@@ -5,6 +5,7 @@ import app.utils.exceptions.PokedexEmptyException;
 import app.utils.exceptions.PokemonAlreadyExistsException;
 import app.utils.exceptions.PokemonNotFoundException;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,17 +40,20 @@ public class Pokedex {
         pokedex.remove(pokemon);
     }
 
-    public Pokemon searchPokemonByName(String name) throws PokemonNotFoundException, PokedexEmptyException {
-        // If the pokedex does not contain this pokemon, throw InvalidQueryParameterException
+    public ArrayList<Pokemon> searchPokemonByName(String name) throws PokemonNotFoundException, PokedexEmptyException {
         if (pokedex.isEmpty()) {
             throw new PokedexEmptyException("Pokedex is empty, cannot search for any Pokemon.");
         }
+        ArrayList<Pokemon> foundPokemons = new ArrayList<>();
         for (Pokemon pokemon : pokedex) {
             if (pokemon.getPokemonName().equals(name)) {
-                return pokemon;
+                foundPokemons.add(pokemon);
             }
         }
-        throw new PokemonNotFoundException("Pokemon not found in the pokedex.");
+        if (foundPokemons.isEmpty()) {  // No Pokemons of this name were found.
+            throw new PokemonNotFoundException("Pokemon not found in the pokedex.");
+        }
+        return foundPokemons;
     }
 
     public Set<Pokemon> getPokedex() {

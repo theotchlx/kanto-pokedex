@@ -7,10 +7,13 @@ import app.utils.exceptions.PokemonNotFoundException;
 import app.utils.models.Pokedex;
 import app.utils.models.Pokemon;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import io.javalin.Javalin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
 
 public class ServerJava {
 
@@ -55,11 +58,17 @@ public class ServerJava {
                         Si le paramètre est invalide (par exemple de mauvais type), le serveur répond avec le code d'erreur 400.
                     */
                     try {
-                        String nameToSearch = ctx.queryParam("name");  // Get the name of the Pokemon to delete from the ?name="..." query parameter
+                        String nameToSearch = ctx.queryParam("name");  // Get the name of the Pokemons to search for from the ?name="..." query parameter
 
-                        Pokemon pokemon = pokedex.searchPokemonByName(nameToSearch);  // Search for the Pokemon by name in the pokedex
+                        ArrayList<Pokemon> pokemons = pokedex.searchPokemonByName(nameToSearch);  // Search for the Pokemons of this name in the pokedex
 
-                        ctx.status(200).result("Pokemon found in pokedex:" + pokemon);  // Return the found Pokemon (call to .toString())
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        String pokemonJson = objectMapper.writeValueAsString(pokemons);  // Convert ArrayList<Pokemon> object to JSON string
+
+                        logger.debug("Pokemons searched for: " + nameToSearch);
+
+                        ctx.contentType("application/json");  // Set response content type to JSON
+                        ctx.status(200).result(pokemonJson);  // Return the found Pokemons ArrayList as a JSON string
                     } catch (PokemonNotFoundException e) {
                         logger.error("Exception encountered while searching pokemon by name: " + e.getMessage());
                         ctx.status(400).result(e.getMessage());  // "Pokemon not found in the pokedex."
@@ -83,10 +92,18 @@ public class ServerJava {
                     try {
                         String nameToDelete = ctx.queryParam("name");  // Get the name of the Pokemon to delete from the ?name="..." query parameter
 
-                        Pokemon pokemon = pokedex.searchPokemonByName(nameToDelete);
-                        pokedex.removePokemon(pokemon);
+                        ArrayList<Pokemon> pokemons = pokedex.searchPokemonByName(nameToDelete);
+                        for (Pokemon pokemon : pokemons) {
+                            pokedex.removePokemon(pokemon);  // Remove each found Pokemon from the pokedex
+                        }
 
-                        ctx.status(200).result("Pokemon deleted from pokedex.");
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        String pokemonJson = objectMapper.writeValueAsString(pokemons);  // Convert ArrayList<Pokemon> object to JSON string
+
+                        logger.debug("Pokemon deleted: " + nameToDelete);
+
+                        ctx.contentType("application/json");  // Set response content type to JSON
+                        ctx.status(200).result(pokemonJson);  // Return the deleted Pokemons ArrayList as a JSON string
                     } catch (PokemonNotFoundException e) {
                         logger.error("Exception encountered while deleting pokemon: " + e.getMessage());
                         ctx.status(400).result(e.getMessage());  // "Pokemon not found in the pokedex."
