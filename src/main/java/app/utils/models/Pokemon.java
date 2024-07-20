@@ -1,22 +1,20 @@
 package app.utils.models;
 
-//import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 public class Pokemon implements Comparable<Pokemon> {
-    //@JsonProperty("pokemonName")
     private String pokemonName;
-    private PokemonType type;
+    private Elements type;
     private int lifePoints;
     private Set<Power> powers;  // Defined as Set and not HashSet for flexibility and maintainability
 
     public Pokemon() {
+        this.powers = new HashSet<>();
     }
 
-    public Pokemon(String pokemonName, PokemonType type, int lifePoints, HashSet<Power> powers) {
+    public Pokemon(String pokemonName, Elements type, int lifePoints, Set<Power> powers) {
         this.pokemonName = pokemonName;
         this.type = type;
         this.lifePoints = lifePoints;
@@ -38,7 +36,7 @@ public class Pokemon implements Comparable<Pokemon> {
 
     @Override
     public String toString() {
-        return "Pokemon{" +
+        return "Pokemon {" +
                 "pokemonName='" + pokemonName + '\'' +
                 ", type=" + type +
                 ", lifePoints=" + lifePoints +
@@ -60,11 +58,11 @@ public class Pokemon implements Comparable<Pokemon> {
         this.pokemonName = pokemonName;
     }
 
-    public PokemonType getType() {
+    public Elements getType() {
         return type;
     }
 
-    public void setType(PokemonType type) {
+    public void setType(Elements type) {
         this.type = type;
     }
 
