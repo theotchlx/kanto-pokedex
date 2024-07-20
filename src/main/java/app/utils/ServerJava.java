@@ -1,9 +1,6 @@
 package app.utils;
 
-import app.utils.exceptions.InvalidPokemonException;
-import app.utils.exceptions.PokedexEmptyException;
-import app.utils.exceptions.PokemonAlreadyExistsException;
-import app.utils.exceptions.PokemonNotFoundException;
+import app.utils.exceptions.*;
 import app.utils.models.Pokedex;
 import app.utils.models.Pokemon;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -73,10 +70,29 @@ public class ServerJava {
                     // And the name parameter cannot be invalid as long as it is a String (this is checked by the global exception handlers down below).
                 })
                 .post("/api/modify", ctx -> {
-                    //String typeToSearch = ctx.queryParam("type");
+                    //ModifyPokemonRequest request = ctx.bodyAsClass(ModifyPokemonRequest.class);
                 })
                 .get("/api/searchByType", ctx -> {
-                    //ModifyPokemonRequest request = ctx.bodyAsClass(ModifyPokemonRequest.class);
+                    /* User Story 3:
+                        Si aucun pokémon ne correspond à ce type, une liste vide est renvoyée avec le code 200.
+                        Si le type recherché n'est pas dans la liste de type possible, le serveur renvoie une requête vide avec le code d'erreur 400.
+                    */
+                    try {
+                        String typeToSearch = ctx.queryParam("type");  // Get the type of the Pokemons to search for from the ?type="..." query parameter
+
+                        ArrayList<Pokemon> pokemons = pokedex.searchPokemonByType(typeToSearch);  // Search for the Pokemons of this type in the pokedex
+
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        String pokemonJson = objectMapper.writeValueAsString(pokemons);  // Convert ArrayList<Pokemon> object to JSON string
+
+                        logger.debug("Pokemons searched for: " + typeToSearch);
+
+                        ctx.contentType("application/json");  // Set response content type to JSON
+                        ctx.status(200).result(pokemonJson);  // Return the found Pokemons ArrayList as a JSON string
+                    } catch (TypeDoesNotExistException e) {
+                        logger.error("Element searched for does not exist in query parameter: " + e.getMessage());
+                        ctx.status(400).result(e.getMessage());  // "Pokemon type does not exist."
+                    }
                 })
                 .delete("/api/delete", ctx -> {
                     /* PERSONAL BONUS:

@@ -50,7 +50,7 @@ public class Pokedex {
 
     public ArrayList<Pokemon> searchPokemonByType(String type) throws TypeDoesNotExistException {
         if (!Elements.isValidElement(type)) {
-            throw new TypeDoesNotExistException("Type does not exist.");
+            throw new TypeDoesNotExistException("Pokemon type does not exist.");
         }
         ArrayList<Pokemon> foundPokemons = new ArrayList<>();
         for (Pokemon pokemon : pokedex) {

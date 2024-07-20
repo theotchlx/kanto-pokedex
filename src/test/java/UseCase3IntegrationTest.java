@@ -24,10 +24,17 @@ class UseCase3IntegrationTest {
     @Test
     void test_search_grass() {
         JavalinTest.test(app, (server, client) -> {
+            // GIVEN
             loadDataIntoApp(client);
+
+            // WHEN
             Response response = client.get(SEARCH_BY_TYPE_URL + "GRASS");
+            // THEN
             assertThat(response.code()).isEqualTo(200);
+
+            // WHEN
             JSONArray jsonResponse = parseResponse(response);
+            // THEN
             assertThat(jsonResponse.length()).isEqualTo(2);
             Path herbizarrePath = Paths.get("resources/datasets/create_herbizarre.json");
             Path bulbizarrePath = Paths.get("resources/datasets/create_bulbizarre.json");
@@ -45,10 +52,15 @@ class UseCase3IntegrationTest {
     @Test
     void test_search_fire() {
         JavalinTest.test(app, (server, client) -> {
+            // GIVEN
             loadDataIntoApp(client);
+
+            // WHEN
             Response response = client.get(SEARCH_BY_TYPE_URL + "FIRE");
             assertThat(response.code()).isEqualTo(200);
             JSONArray jsonResponse = parseResponse(response);
+
+            // THEN
             assertThat(jsonResponse.length()).isEqualTo(1);
             assertThat(jsonResponse.getJSONObject(0).toString())
                     .is(isJsonEquals(new String(Files.readAllBytes(Paths.get("resources/datasets/create_dracaufeu.json")))));
@@ -58,8 +70,13 @@ class UseCase3IntegrationTest {
     @Test
     void test_search_inexisting_type() {
         JavalinTest.test(app, (server, client) -> {
+            // GIVEN
             loadDataIntoApp(client);
+
+            // WHEN
             Response response = client.get(SEARCH_BY_TYPE_URL + "SUN");
+
+            // THEN
             assertThat(response.code()).isEqualTo(400);
             assert response.body() != null;
             assertThat(response.body().string()).isNullOrEmpty();
