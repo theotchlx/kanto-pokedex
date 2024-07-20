@@ -68,6 +68,24 @@ class UseCase3IntegrationTest {
     }
 
     @Test
+    void test_search_case_insensitive() {
+        JavalinTest.test(app, (server, client) -> {
+            // GIVEN
+            loadDataIntoApp(client);
+
+            // WHEN
+            Response response = client.get(SEARCH_BY_TYPE_URL + "fIrE");
+            assertThat(response.code()).isEqualTo(200);
+            JSONArray jsonResponse = parseResponse(response);
+
+            // THEN
+            assertThat(jsonResponse.length()).isEqualTo(1);
+            assertThat(jsonResponse.getJSONObject(0).toString())
+                    .is(isJsonEquals(new String(Files.readAllBytes(Paths.get("resources/datasets/create_dracaufeu.json")))));
+        });
+    }
+
+    @Test
     void test_search_inexisting_type() {
         JavalinTest.test(app, (server, client) -> {
             // GIVEN
