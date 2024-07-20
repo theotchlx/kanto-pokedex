@@ -1,9 +1,6 @@
 package app.utils.models;
 
-import app.utils.exceptions.InvalidPokemonException;
-import app.utils.exceptions.PokedexEmptyException;
-import app.utils.exceptions.PokemonAlreadyExistsException;
-import app.utils.exceptions.PokemonNotFoundException;
+import app.utils.exceptions.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -44,6 +41,20 @@ public class Pokedex {
         ArrayList<Pokemon> foundPokemons = new ArrayList<>();
         for (Pokemon pokemon : pokedex) {
             if (pokemon.getPokemonName().toLowerCase().contains(name.toLowerCase())) {
+                foundPokemons.add(pokemon);
+            }
+        }
+        return foundPokemons;
+        // Returns an empty list if the pokedex is empty or does not contain the searched Pokemons.
+    }
+
+    public ArrayList<Pokemon> searchPokemonByType(String type) throws TypeDoesNotExistException {
+        if (!Elements.isValidElement(type)) {
+            throw new TypeDoesNotExistException("Type does not exist.");
+        }
+        ArrayList<Pokemon> foundPokemons = new ArrayList<>();
+        for (Pokemon pokemon : pokedex) {
+            if (pokemon.getType().toString().equals(type.toUpperCase())) {
                 foundPokemons.add(pokemon);
             }
         }
