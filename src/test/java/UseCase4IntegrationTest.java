@@ -18,7 +18,7 @@ class UseCase4IntegrationTest {
 
     @Test
     void test_modify_lifePoints() throws IOException {
-        String jsonContent = new String(Files.readAllBytes(Paths.get("src/test/resources/datasets/modify_evoli_lifepoints.json")));
+        String jsonContent = new String(Files.readAllBytes(Paths.get("resources/datasets/modify_evoli_lifepoints.json")));
 
         JavalinTest.test(app, (server, client) -> {
             loadDataIntoApp(client);
@@ -31,7 +31,7 @@ class UseCase4IntegrationTest {
 
     @Test
     void test_modify_add_power() throws IOException {
-        String jsonContent = new String(Files.readAllBytes(Paths.get("src/test/resources/datasets/add_pikachu_power.json")));
+        String jsonContent = new String(Files.readAllBytes(Paths.get("resources/datasets/add_pikachu_power.json")));
 
         JavalinTest.test(app, (server, client) -> {
             loadDataIntoApp(client);
@@ -45,7 +45,7 @@ class UseCase4IntegrationTest {
 
     @Test
     void test_modify_unexisting_pokemon() throws IOException {
-        String jsonContent = new String(Files.readAllBytes(Paths.get("src/test/resources/datasets/modify_unexisting_pokemon.json")));
+        String jsonContent = new String(Files.readAllBytes(Paths.get("resources/datasets/modify_unexisting_pokemon.json")));
 
         JavalinTest.test(app, (server, client) -> {
             loadDataIntoApp(client);

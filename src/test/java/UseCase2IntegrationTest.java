@@ -35,7 +35,7 @@ class UseCase2IntegrationTest {
             JSONArray jsonResponse = parseResponse(response);
             assertThat(jsonResponse.length()).isEqualTo(1);
             assertThat(jsonResponse.getJSONObject(0).toString()).is(isJsonEquals(
-                    new String(Files.readAllBytes(Paths.get("src/test/resources/datasets/create_pikachu.json")))));
+                    new String(Files.readAllBytes(Paths.get("resources/datasets/create_pikachu.json")))));
         });
     }
 
@@ -53,7 +53,7 @@ class UseCase2IntegrationTest {
             JSONArray jsonResponse = parseResponse(response);
             assertThat(jsonResponse.length()).isEqualTo(1);
             assertThat(jsonResponse.getJSONObject(0).toString()).is(isJsonEquals(
-                    new String(Files.readAllBytes(Paths.get("src/test/resources/datasets/create_dracaufeu.json")))));
+                    new String(Files.readAllBytes(Paths.get("resources/datasets/create_dracaufeu.json")))));
         });
     }
 
@@ -69,8 +69,8 @@ class UseCase2IntegrationTest {
             // THEN
             JSONArray jsonResponse = parseResponse(response);
             assertThat(jsonResponse.length()).isEqualTo(2);
-            Path herbizarrePath = Paths.get("src/test/resources/datasets/create_herbizarre.json");
-            Path bulbizarrePath = Paths.get("src/test/resources/datasets/create_bulbizarre.json");
+            Path herbizarrePath = Paths.get("resources/datasets/create_herbizarre.json");
+            Path bulbizarrePath = Paths.get("resources/datasets/create_bulbizarre.json");
             assertThat(jsonResponse.getJSONObject(0).toString())
                     .is(anyOf(
                             isJsonEquals(new String(Files.readAllBytes(bulbizarrePath))),
