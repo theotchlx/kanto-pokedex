@@ -2,12 +2,19 @@ import app.utils.ServerJava;
 import io.javalin.Javalin;
 import io.javalin.testtools.JavalinTest;
 import okhttp3.Response;
-import org.json.JSONObject;
+import org.assertj.core.api.Assertions;
+import org.json.JSONArray;
 import org.junit.jupiter.api.Test;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static org.assertj.core.api.Assertions.anyOf;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static utils.LoadData.loadDataIntoApp;
-import static utils.UrlPaths.SEARCH_BY_NAME_URL;
+import static utils.ResponseParser.isJsonEquals;
+import static utils.ResponseParser.parseResponse;
 import static utils.UrlPaths.SEARCH_BY_TYPE_URL;
 
 class UseCase3IntegrationTest {
@@ -20,7 +27,18 @@ class UseCase3IntegrationTest {
             loadDataIntoApp(client);
             Response response = client.get(SEARCH_BY_TYPE_URL + "GRASS");
             assertThat(response.code()).isEqualTo(200);
-            assertThat(response.body().string()).contains("Herbizarre").contains("Bulbizarre");
+            JSONArray jsonResponse = parseResponse(response);
+            assertThat(jsonResponse.length()).isEqualTo(2);
+            Path herbizarrePath = Paths.get("src/test/resources/datasets/create_herbizarre.json");
+            Path bulbizarrePath = Paths.get("src/test/resources/datasets/create_bulbizarre.json");
+            Assertions.assertThat(jsonResponse.getJSONObject(0).toString())
+                    .is(anyOf(
+                            isJsonEquals(new String(Files.readAllBytes(bulbizarrePath))),
+                            isJsonEquals(new String(Files.readAllBytes(herbizarrePath)))));
+            Assertions.assertThat(jsonResponse.getJSONObject(1).toString())
+                    .is(anyOf(
+                            isJsonEquals(new String(Files.readAllBytes(bulbizarrePath))),
+                            isJsonEquals(new String(Files.readAllBytes(herbizarrePath)))));
         });
     }
 
@@ -30,8 +48,10 @@ class UseCase3IntegrationTest {
             loadDataIntoApp(client);
             Response response = client.get(SEARCH_BY_TYPE_URL + "FIRE");
             assertThat(response.code()).isEqualTo(200);
-            assert response.body() != null;
-            assertThat(response.body().string()).contains("Dracaufeu");
+            JSONArray jsonResponse = parseResponse(response);
+            assertThat(jsonResponse.length()).isEqualTo(1);
+            assertThat(jsonResponse.getJSONObject(0).toString())
+                    .is(isJsonEquals(new String(Files.readAllBytes(Paths.get("src/test/resources/datasets/create_dracaufeu.json")))));
         });
     }
 
@@ -42,7 +62,7 @@ class UseCase3IntegrationTest {
             Response response = client.get(SEARCH_BY_TYPE_URL + "SUN");
             assertThat(response.code()).isEqualTo(400);
             assert response.body() != null;
-            assertThat(response.body().string()).isEqualTo("");
+            assertThat(response.body().string()).isNullOrEmpty();
         });
     }
 }
