@@ -92,4 +92,22 @@ class UseCase2IntegrationTest {
             assertThat(jsonResponse.length()).isZero();
         });
     }
+
+    @Test
+    void test_search_case_insensitive() {
+        JavalinTest.test(app, (server, client) -> {
+            // GIVEN
+            loadDataIntoApp(client);
+
+            // WHEN
+            Response response = client.get(SEARCH_BY_NAME_URL + "pIkAcHu");
+
+            // THEN
+            assertThat(response.code()).isEqualTo(200);
+            JSONArray jsonResponse = parseResponse(response);
+            assertThat(jsonResponse.length()).isEqualTo(1);
+            assertThat(jsonResponse.getJSONObject(0).toString()).is(isJsonEquals(
+                    new String(Files.readAllBytes(Paths.get("resources/datasets/create_pikachu.json")))));
+        });
+    }
 }
