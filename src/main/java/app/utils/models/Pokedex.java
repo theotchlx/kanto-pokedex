@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Pokedex {
-    private Set<Pokemon> pokedex;  // HashSet to store the Pokemon. Defined as Set for flexibility and maintainability
+    private final Set<Pokemon> pokedex;  // HashSet to store the Pokemon. Defined as Set for flexibility and maintainability
 
     public Pokedex() {
         this.pokedex = new HashSet<>();
