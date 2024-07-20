@@ -1,0 +1,12 @@
+{
+    "pokemonName": "Dracaufeu",
+    "type": "FIRE",
+    "lifePoints": 250,
+    "powers": [
+        {
+            "powerName": "Flammes Effroyables",
+            "damageType": "FIRE",
+            "damage": 250
+        }
+    ]
+}

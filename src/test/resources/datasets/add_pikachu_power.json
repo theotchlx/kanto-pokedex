@@ -1,0 +1,10 @@
+{
+    "pokemonName": "Pikachu",
+    "powers": [
+        {
+            "powerName": "Boule Elec",
+            "damageType": "ELECTRIC",
+            "damage": 30
+        }
+    ]
+}

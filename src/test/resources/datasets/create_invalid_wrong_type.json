@@ -1,0 +1,12 @@
+{
+    "pokemonName": "Bulbizarre",
+    "type": "SNOW",
+    "lifePoints": 70,
+    "powers": [
+        {
+            "powerName": "Eclair Fou",
+            "damageType": "SNOW",
+            "damage": 30
+        }
+    ]
+}
