@@ -91,7 +91,7 @@ public class ServerJava {
                         ctx.status(200).result(pokemonJson);  // Return the found Pokemons ArrayList as a JSON string
                     } catch (TypeDoesNotExistException e) {
                         logger.error("Element searched for does not exist in query parameter: " + e.getMessage());
-                        ctx.status(400).result(e.getMessage());  // "Pokemon type does not exist."
+                        ctx.status(400);  // No message (as per US3 integration test)
                     }
                 })
                 .delete("/api/delete", ctx -> {
