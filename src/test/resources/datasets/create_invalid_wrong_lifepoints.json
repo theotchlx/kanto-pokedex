@@ -1,0 +1,12 @@
+{
+    "pokemonName": "Bulbizarre",
+    "type": "GRASS",
+    "lifePoints": "stringHere",
+    "powers": [
+        {
+            "powerName": "Eclair Fou",
+            "damageType": "GRASS",
+            "damage": 30
+        }
+    ]
+}

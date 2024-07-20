@@ -1,0 +1,12 @@
+{
+    "pokemonName": "Bulbizarre",
+    "type": "GRASS",
+    "lifePoints": 70,
+    "powers": [
+        {
+            "powerName": "Tranch'Herbe",
+            "damageType": "GRASS",
+            "damage": 30
+        }
+    ]
+}

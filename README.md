@@ -1,93 +1,206 @@
-# 2024 Exam Do
+# Pokedex java boilerplate
 
+# Introduction
 
+Cet exercice consiste à implémenter le serveur back-end des pokédexs de Kanto.
 
-## Getting started
+Il s'agit d'un serveur REST dont chacun des endpoints est décrit dans les users stories ci-dessous.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+Chaque user story rapporte un certain nombre de points. Si les tests automatisés associés à cette user story fonctionnent, ces points vous seront accordés. Si une partie d'entres eux fonctionnent mais pas tous, vous marquerez des points au prorata des tests passés.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+Par ailleurs 5 points seront réservés à la qualité du code implémenté selon les critères suivants:
+- Architecture de l'application
+- Maintenabilité du code
+- Pertinence des choix des containers
+- Threadsafety
+- Gestion des exceptions
 
-## Add your files
+| User story    | Points |
+| ------------- | ---- |
+| User Story 1 | 5 |
+| User Story 2 | 4 |
+| User Story 3 | 3 |
+| User Story 4 | 3 |
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+Le boiler plate associé à ce README vous est fourni comme point de départ avec un endpoint `/api/status` qui ne doit pas être modifié. Des commentaires vous permettant de vous aider à récupèrer les données reçues avec le framework Javalin ont été placés dans le fichier `App.java`.
 
+# Description de l'application
+
+Un pokédex est une console qui permet de consulter les caractéristiques d'un pokémon. On pourra ainsi ajouter des pokémons et consulter les caractérisques d'un ou de plusieurs pokémons.
+Les modèles de données utilisés pour cet exercice sont présentés ci-dessous.
+
+## Pokémon
+
+Le nom du pokémon servira d'identifiant unique dans le cadre de cet exercice.
+
+| Nom de l'attribut | Type |
+| ------------- | ------------ |
+| pokemonName | String |
+| type | Elements |
+| lifePoints | int |
+| powers | List\<Power> |
+
+## Elements
+Les différents éléments sont:
+- NEUTRAL
+- FIRE
+- WATER
+- GRASS
+- ELECTRIC
+- ICE
+- FIGHTING
+- POISON
+- GROUND
+
+## Power
+| Nom de l'attribut | Type |
+| ------------- | ------------ |
+| powerName | String |
+| damageType | Elements |
+| damage | int |
+
+# US 1 - Création d'un pokémon
+
+En tant qu'utilisateur, je souhaite ajouter un pokémon dans la base du Pokédex. J'envoie une requête Json de type `POST` contenant les informations nécessaires à la création.
+- Le nom (servant d'identifiant)
+- Le type
+- Le nombre de points de vie
+- La liste des capacités
+
+Si le pokémon existe déjà ou que le json est incomplet ou invalide, une erreur 400 est renvoyée par le serveur.
+En cas de réussite, le code 200 est envoyé par le serveur.
+
+Le endpoint à utiliser est `/api/create`
+
+## Spécifications d'interfaces
+### Requête
+
+```json
+{
+    "pokemonName": "Pikachu",
+    "type": "ELECTRIC",
+    "lifePoints": 70,
+    "powers": [
+        {
+            "powerName": "gnaw",
+            "damageType": "NEUTRAL",
+            "damage": 30
+        }
+    ]
+}
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/do_exams/2024_exam_do.git
-git branch -M main
-git push -uf origin main
+
+# US 2 - Recherche de pokémons par nom
+
+En tant qu'utilisateur, je souhaite récupérer une liste de pokémons correspondants à certains critères. J'envoie une requète de type `GET` sur le endpoint `/api/searchByName?name=nameToSearch` ayant pour paramètre `name` contenant la chaine de caractères à rechercher.
+
+Le serveur doit envoyer la liste des pokémons pour lesquelles la chaine de caractères fournie par l'utilisateur **est contenue** dans le nom du pokémon. La recherche est sensible à la casse.
+
+Si aucun pokémon ne correspond à cette chaine, une liste vide est renvoyée avec le code 200.
+
+Si le paramètre est invalide (par exemple de mauvais type), le serveur répond avec le code d'erreur 400.
+
+Exemple de requête : `/api/searchByName?name=Pika`
+
+## Spécifications d'interfaces
+### Réponse
+
+```json
+{
+    "result": [
+        {
+            "pokemonName": "Pikachu",
+            "type": "ELECTRIC",
+            "lifePoints": 80,
+            "powers": [
+                {
+                    "powerName": "gnaw",
+                    "damageType": "NEUTRAL",
+                    "damage": 30
+                },
+                {
+                    "powerName": "thunder jolt",
+                    "damageType": "ELECTRIC",
+                    "damage": 50
+                }
+            ]
+        }
+    ]
+}
 ```
 
-## Integrate with your tools
+# US 3 - Recherche de pokémons par type
 
-- [ ] [Set up project integrations](https://gitlab.com/do_exams/2024_exam_do/-/settings/integrations)
+En tant qu'utilisateur, je souhaite récupérer une liste de pokémons appartenant au même type. J'envoie une requète de type `GET` ayant pour paramètre le `type` contenant le type à rechercher.
 
-## Collaborate with your team
+Le serveur doit envoyer la liste des pokémons qui sont du type recherché.
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+Si aucun pokémon ne correspond à ce type, une liste vide est renvoyée avec le code 200.
 
-## Test and Deploy
+Si le type recherché n'est pas dans la liste de type possible, le serveur renvoie une requête vide avec le code d'erreur 400.
 
-Use the built-in continuous integration in GitLab.
+Exemple de requête : `/api/searchByType?type=ELECTRIC`
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+## Spécifications d'interfaces
 
-***
+### Réponse
+```json
+{
+    "result": [
+        {
+            "name": "Pikachu",
+            "lifePoints": 80,
+            "powers": [
+                {
+                    "name": "gnaw",
+                    "damageType": "NEUTRAL",
+                    "damage": 30
+                },
+                {
+                    "name": "thunder jolt",
+                    "damageType": "ELECTRIC",
+                    "damage": 50
+                }
+            ]
+        }
+    ]
+}
+```
 
-# Editing this README
+# US 4 - Modification d'un pokémon
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+En tant qu'utilisateur, je souhaite modifier un pokémon dans la base du Pokédex. J'envoie une requête Json de type `POST` contenant le nom du pokémon et les informations à modifier. Tous les attributs d'un pokémon peuvent être modifiés sauf le nom.
 
-## Suggestions for a good README
+En ce qui concerne la liste de capacité, si la capacité existe déjà, elle n'est pas modifiée. On ne peut qu'ajouter des nouvelles capacités, pas modifier les existantes.
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+Si la modification est effectuée, le serveur répond avec le code 200.
+Si le pokémon n'existe pas, le serveur répond avec le code 404.
+Si le json est invalide, le serveur répond avec le code 400.
 
-## Name
-Choose a self-explaining name for your project.
+Le endpoint à utiliser est `/api/modify`
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+## Spécifications d'interfaces
+### Requête example 1
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+```json
+{
+    "pokemonName": "Pikachu",
+    "lifePoints": 80
+}
+```
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+### Requête example 2
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+```json
+{
+    "pokemonName": "Pikachu",
+    "powers": [
+        {
+            "powerName": "thunder jolt",
+            "damageType": "ELECTRIC",
+            "damage": 50
+        }
+    ]
+}
+```
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.

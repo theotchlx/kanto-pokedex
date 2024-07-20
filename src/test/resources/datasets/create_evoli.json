@@ -1,0 +1,12 @@
+{
+    "pokemonName": "Evoli",
+    "type": "NEUTRAL",
+    "lifePoints": 60,
+    "powers": [
+        {
+            "powerName": "Queue Battoir",
+            "damageType": "NEUTRAL",
+            "damage": 30
+        }
+    ]
+}

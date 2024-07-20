@@ -1,0 +1,17 @@
+{
+    "pokemonName": "Herbizarre",
+    "type": "GRASS",
+    "lifePoints": 100,
+    "powers": [
+        {
+            "powerName": "Tranch'Herbe",
+            "damageType": "GRASS",
+            "damage": 30
+        },
+        {
+            "powerName": "Fouet Toxique",
+            "damageType": "GRASS",
+            "damage": 50
+        }
+    ]
+}
