@@ -57,25 +57,20 @@ public class ServerJava {
                         Si aucun pokémon ne correspond à cette chaine, une liste vide est renvoyée avec le code 200.
                         Si le paramètre est invalide (par exemple de mauvais type), le serveur répond avec le code d'erreur 400.
                     */
-                    try {
-                        String nameToSearch = ctx.queryParam("name");  // Get the name of the Pokemons to search for from the ?name="..." query parameter
+                    String nameToSearch = ctx.queryParam("name");  // Get the name of the Pokemons to search for from the ?name="..." query parameter
 
-                        ArrayList<Pokemon> pokemons = pokedex.searchPokemonByName(nameToSearch);  // Search for the Pokemons of this name in the pokedex
+                    ArrayList<Pokemon> pokemons = pokedex.searchPokemonByName(nameToSearch);  // Search for the Pokemons of this name in the pokedex
 
-                        ObjectMapper objectMapper = new ObjectMapper();
-                        String pokemonJson = objectMapper.writeValueAsString(pokemons);  // Convert ArrayList<Pokemon> object to JSON string
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    String pokemonJson = objectMapper.writeValueAsString(pokemons);  // Convert ArrayList<Pokemon> object to JSON string
 
-                        logger.debug("Pokemons searched for: " + nameToSearch);
+                    logger.debug("Pokemons searched for: " + nameToSearch);
 
-                        ctx.contentType("application/json");  // Set response content type to JSON
-                        ctx.status(200).result(pokemonJson);  // Return the found Pokemons ArrayList as a JSON string
-                    } catch (PokemonNotFoundException e) {
-                        logger.error("Exception encountered while searching pokemon by name: " + e.getMessage());
-                        ctx.status(400).result(e.getMessage());  // "Pokemon not found in the pokedex."
-                    } catch (PokedexEmptyException e) {
-                        logger.error("Exception encountered while searching pokemon by name: " + e.getMessage());
-                        ctx.status(400).result(e.getMessage());  // "Pokedex is empty, cannot search for any Pokemon."
-                    }
+                    ctx.contentType("application/json");  // Set response content type to JSON
+                    ctx.status(200).result(pokemonJson);  // Return the found Pokemons ArrayList as a JSON string
+
+                    // There are no exceptions specific to this method. It will return an empty list if the search is unsuccessful.
+                    // And the name parameter cannot be invalid as long as it is a String (this is checked by the global exception handlers down below).
                 })
                 .post("/api/modify", ctx -> {
                     //String typeToSearch = ctx.queryParam("type");

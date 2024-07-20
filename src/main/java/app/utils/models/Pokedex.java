@@ -40,20 +40,15 @@ public class Pokedex {
         pokedex.remove(pokemon);
     }
 
-    public ArrayList<Pokemon> searchPokemonByName(String name) throws PokemonNotFoundException, PokedexEmptyException {
-        if (pokedex.isEmpty()) {
-            throw new PokedexEmptyException("Pokedex is empty, cannot search for any Pokemon.");
-        }
+    public ArrayList<Pokemon> searchPokemonByName(String name) {
         ArrayList<Pokemon> foundPokemons = new ArrayList<>();
         for (Pokemon pokemon : pokedex) {
-            if (pokemon.getPokemonName().equals(name)) {
+            if (pokemon.getPokemonName().toLowerCase().contains(name.toLowerCase())) {
                 foundPokemons.add(pokemon);
             }
         }
-        if (foundPokemons.isEmpty()) {  // No Pokemons of this name were found.
-            throw new PokemonNotFoundException("Pokemon not found in the pokedex.");
-        }
         return foundPokemons;
+        // Returns an empty list if the pokedex is empty or does not contain the searched Pokemons.
     }
 
     public Set<Pokemon> getPokedex() {
