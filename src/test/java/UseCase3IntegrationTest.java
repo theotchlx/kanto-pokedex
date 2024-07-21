@@ -24,7 +24,7 @@ class UseCase3IntegrationTest {
     @Test
     void test_search_grass() {
 
-        // !! READ ME !! This test to be failing some of the time, even though the server always returns the correct response.
+        // !! READ ME !! This test to be failing ***some of the time*** (re-run it), even though the server always returns the same, correct response.
         // I was not able to diagnose exactly why this happens.
 
         JavalinTest.test(app, (server, client) -> {
