@@ -113,10 +113,10 @@ public class ServerJava {
 
                         ctx.status(200).result("Pokemon modified successfully.");
                     } catch (PokemonNotFoundException e) {
-                        logger.error("Exception encountered while deleting pokemon: " + e.getMessage());
+                        logger.error("Exception encountered while modifying pokemon: " + e.getMessage());
                         ctx.status(404).result(e.getMessage());  // "Pokemon not found in the pokedex."
                     } catch (PokedexEmptyException e) {
-                        logger.error("Exception encountered while deleting pokemon: " + e.getMessage());
+                        logger.error("Exception encountered while modifying pokemon: " + e.getMessage());
                         ctx.status(404).result(e.getMessage());  // "Pokedex is empty, cannot modify any Pokemon."
                     }
                 })

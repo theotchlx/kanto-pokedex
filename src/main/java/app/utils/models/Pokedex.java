@@ -66,7 +66,7 @@ public class Pokedex {
         if (pokedex.isEmpty()) {
             throw new PokedexEmptyException("Pokedex is empty, cannot modify any Pokemon.");
         }
-        if (!pokedex.contains(updatedPokemon)) {
+        if (searchPokemonByName(pokemonName).isEmpty()) {
             throw new PokemonNotFoundException("Pokemon not found in the pokedex.");
         }
 

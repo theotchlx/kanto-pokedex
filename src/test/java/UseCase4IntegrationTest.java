@@ -39,7 +39,9 @@ class UseCase4IntegrationTest {
             assertThat(response.code()).isEqualTo(200);
 
             assertThat(client.get(SEARCH_BY_NAME_URL+"Pikachu").body().string())
-                    .contains("\"powers\":[{\"powerName\":\"Eclair Fou\",\"damageType\":\"ELECTRIC\",\"damage\":90}]}]");
+                    .contains("{\"powerName\":\"Eclair Fou\",\"damageType\":\"ELECTRIC\",\"damage\":90}");  // Fixed this test. It was not corresponding to the README.
+            // Justification : this test checked for the deletion of Pikachu's power and replacement by a new one.
+            // README states : "En ce qui concerne la liste de capacité, si la capacité existe déjà, elle n'est pas modifiée. On ne peut qu'ajouter des nouvelles capacités, pas modifier les existantes."
         });
     }
 
