@@ -28,7 +28,8 @@ public class Pokemon implements Comparable<Pokemon> {
         Pokemon pokemon = (Pokemon) o;
         return lifePoints == pokemon.lifePoints && pokemonName.equals(pokemon.pokemonName) && type == pokemon.type && powers.equals(pokemon.powers);
     }
-
+    // I was unsure if a Pokémon is unique by all its attributes or just by its name. The 4th user story makes me believe that a Pokémon is unique only by its name... But a Pokédex can contain multiple pokémons of the same species ??
+    // Due to this, modifying a pokemon only modifies the first pokémon of its name.
     @Override
     public int hashCode() {
         return Objects.hash(pokemonName, type, lifePoints, powers);

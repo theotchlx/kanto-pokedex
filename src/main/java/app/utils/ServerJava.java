@@ -1,5 +1,6 @@
 package app.utils;
 
+import app.utils.dtos.ModifyPokemonRequest;
 import app.utils.exceptions.*;
 import app.utils.models.Pokedex;
 import app.utils.models.Pokemon;
@@ -69,9 +70,6 @@ public class ServerJava {
                     // There are no exceptions specific to this method. It will return an empty list if the search is unsuccessful.
                     // And the name parameter cannot be invalid as long as it is a String (this is checked by the global exception handlers down below).
                 })
-                .post("/api/modify", ctx -> {
-                    //ModifyPokemonRequest request = ctx.bodyAsClass(ModifyPokemonRequest.class);
-                })
                 .get("/api/searchByType", ctx -> {
                     /* User Story 3:
                         Si aucun pokémon ne correspond à ce type, une liste vide est renvoyée avec le code 200.
@@ -92,6 +90,34 @@ public class ServerJava {
                     } catch (TypeDoesNotExistException e) {
                         logger.error("Element searched for does not exist in query parameter: " + e.getMessage());
                         ctx.status(400);  // No message (as per US3 integration test)
+                    }
+                })
+                .post("/api/modify", ctx -> {
+                    /* User Story 4:
+                        Si la modification est effectuée, le serveur répond avec le code 200.
+                        Si le pokémon n'existe pas, le serveur répond avec le code 404.
+                        Si le json est invalide, le serveur répond avec le code 400.
+                    */
+                    try {
+                        ModifyPokemonRequest request = ctx.bodyAsClass(ModifyPokemonRequest.class);
+
+                        Pokemon updatedPokemon = new Pokemon();  // Create a new Pokemon object to store the updated Pokemon data
+
+                        updatedPokemon.setType(request.getType());
+                        updatedPokemon.setLifePoints(request.getLifePoints());
+                        updatedPokemon.setPowers(request.getPowers());
+
+                        pokedex.modifyPokemon(request.getPokemonName(), updatedPokemon);  // Modify the Pokemon in the pokedex with the updated pokemon
+
+                        logger.debug("Pokemon modified: " + request.getPokemonName());
+
+                        ctx.status(200).result("Pokemon modified successfully.");
+                    } catch (PokemonNotFoundException e) {
+                        logger.error("Exception encountered while deleting pokemon: " + e.getMessage());
+                        ctx.status(404).result(e.getMessage());  // "Pokemon not found in the pokedex."
+                    } catch (PokedexEmptyException e) {
+                        logger.error("Exception encountered while deleting pokemon: " + e.getMessage());
+                        ctx.status(404).result(e.getMessage());  // "Pokedex is empty, cannot modify any Pokemon."
                     }
                 })
                 .delete("/api/delete", ctx -> {
@@ -117,10 +143,10 @@ public class ServerJava {
                         ctx.status(200).result(pokemonJson);  // Return the deleted Pokemons ArrayList as a JSON string
                     } catch (PokemonNotFoundException e) {
                         logger.error("Exception encountered while deleting pokemon: " + e.getMessage());
-                        ctx.status(400).result(e.getMessage());  // "Pokemon not found in the pokedex."
+                        ctx.status(404).result(e.getMessage());  // "Pokemon not found in the pokedex."
                     } catch (PokedexEmptyException e) {
                         logger.error("Exception encountered while deleting pokemon: " + e.getMessage());
-                        ctx.status(400).result(e.getMessage());  // "Pokedex is empty, cannot remove any Pokemon."
+                        ctx.status(404).result(e.getMessage());  // "Pokedex is empty, cannot remove any Pokemon."
                     }
                 })
         ;

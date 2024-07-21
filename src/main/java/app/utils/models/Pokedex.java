@@ -62,6 +62,40 @@ public class Pokedex {
         // Returns an empty list if the pokedex is empty or does not contain the searched Pokemons.
     }
 
+    public void modifyPokemon(String pokemonName, Pokemon updatedPokemon) throws PokedexEmptyException, PokemonNotFoundException {
+        if (pokedex.isEmpty()) {
+            throw new PokedexEmptyException("Pokedex is empty, cannot modify any Pokemon.");
+        }
+        if (!pokedex.contains(updatedPokemon)) {
+            throw new PokemonNotFoundException("Pokemon not found in the pokedex.");
+        }
+
+        // Find the existing Pokemon in the pokedex, which will be modified
+        Pokemon existingPokemon = null;
+        for (Pokemon pokemon : pokedex) {
+            if (pokemon.getPokemonName().equals(pokemonName)) {  // Only the first Pokemon of the name will be modified. See Pokemon.equals() comments for more details on the thinking behind this implementation.
+                existingPokemon = pokemon;
+                break;
+            }
+        }
+
+        // Modify the attributes of the existing pokemon, if they are set
+        if (updatedPokemon.getType() != null) {
+            existingPokemon.setType(updatedPokemon.getType());
+        }
+        if (updatedPokemon.getLifePoints() > 0) {  // Life points default to 0 if not set - makes sense as if a pokemon were to die, it would get deleted, not modified.
+            existingPokemon.setLifePoints(updatedPokemon.getLifePoints());
+        }
+        if (updatedPokemon.getPowers() != null) {
+            Set<Power> existingPowers = existingPokemon.getPowers();
+            for (Power power : updatedPokemon.getPowers()) {
+                if (!existingPowers.contains(power)) {
+                    existingPowers.add(power);
+                }
+            }
+        }
+    }
+
     public Set<Pokemon> getPokedex() {
         return pokedex;
     }
